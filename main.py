@@ -14,32 +14,44 @@ class Player:
         ).lower()
         system("cls")
         self.strength = 1
-        self.magicpower = 1
-        self.stealth = 1
+        self.intelligence = 1
+        self.dexterity = 1
+
+    @property
+    def attack_damage(self):
+        if self.archetype == "warrior":
+            return self.strength * 2
+        elif self.archetype == "mage":
+            return self.intelligence * 2
+        elif self.archetype == "rogue":
+            return self.dexterity * 2
 
     def __str__(self) -> str:
         return f"Name: {self.name}  Class: {self.archetype.capitalize()}"
 
     def checkstats(self):
         print(
-            f"\nStrength: {self.strength}\nMagic power: {self.magicpower}\nStealth: {self.stealth}"
+            f"\nStrength: {self.strength}\nIntelligence: {self.intelligence}\nDexterity: {self.dexterity}\nAttack: {self.attack_damage}"
         )
 
-    def addstats(self, stat):
+    def addstats(self, stat, times=1):
         match stat:
             case "strength":
-                self.strength += 1
-            case "magicpower":
-                self.magicpower += 1
-            case "stealth":
-                self.stealth += 1
+                self.strength += 1 * times
+            case "intelligence":
+                self.intelligence += 1 * times
+            case "dexterity":
+                self.dexterity += 1 * times
             case "every stat":
-                self.strength += 1
-                self.magicpower += 1
-                self.stealth += 1
+                self.strength += 1 * times
+                self.intelligence += 1 * times
+                self.dexterity += 1 * times
             case _:
                 pass
-        print(f"You have gained 1 point of {stat}!")
+        print(f"You have gained {times} point(s) of {stat}!")
+
+    def attack(self, target):
+        print(f"{target.name} watch out! You have been attacked by {self.name}!")
 
 
 class Enemy(Player):
@@ -47,24 +59,23 @@ class Enemy(Player):
         self.name = name
         self.archetype = archetype
         self.strength = randint(1, daycount + 1)
-        self.magicpower = randint(1, daycount + 1)
-        self.stealth = randint(1, daycount + 1)
-
-    def attack(self, target):
-        print(f"{target.name} watch out! You have been attacked by {self.name}!")
+        self.intelligence = randint(1, daycount + 1)
+        self.dexterity = randint(1, daycount + 1)
 
 
 player = Player()
 # print(player)
 player.checkstats()
-# player.addstats("strength")
-
+player.addstats("strength")
+player.checkstats()
+player.addstats("intelligence", 2)
+player.checkstats()
 
 location = ["Dark woods", "Wetlands", "Magic ruins", "Bandit camp"]
 daycount = 1
 
 enemy = Enemy("Bandit", "warrior")
-# enemy.attack(player)
+enemy.attack(player)
 # enemy.checkstats()
 
 while True:
@@ -73,14 +84,14 @@ while True:
             player.strength += 3
             break
         case "mage":
-            player.magicpower += 3
+            player.intelligence += 3
             break
         case "rogue":
-            player.stealth += 3
+            player.dexterity += 3
             break
         case _:
             player.archetype = input(
-                "\nAre you sure that is a real thing?. Let me ask again.\n... a warrior, mage or a rogue?\n"
+                "\nAre you sure that is a real thing?. Let me ask you again.\n... a warrior, mage or a rogue?\n"
             )
 print(f"\nAh.. so {player.archetype} {player.name}!\nYour adventure begins now.\n")
 
@@ -93,19 +104,17 @@ while True:
         print(f"\nYou are now in {location_current}\n")
         if location_current == location[2]:
             print(
-                "You can feel the magic surrounding you. After searching the ruins you discover an old spellbook, which helps you improve your magical powers.\n"
+                "You can feel the magic surrounding you. After searching the ruins you discover an old book, which contains valuable knowledge.\n"
             )
-            player.addstats("magicpower")
+            player.addstats("intelligence")
         else:
             print(
-                "You are trying to go past it without being noticed...\n...and it worked! You have improved your ability to remain stealthy"
+                "You are trying to go past it without being noticed...\n...and it worked! You have improved your dexterity"
             )
-            player.addstats("stealth")
+            player.addstats("dexterity")
         daycount += 1
     elif player.choice == player.choices[1]:
-        print(
-            f"\nStrength:    {player.strength}\nMagic power: {player.magicpower}\nStealth:     {player.stealth}"
-        )
+        player.checkstats()
     elif player.choice == player.choices[2]:
         print(
             "\nYou found a place to safely camp and took a moment of respite. You are well rested!"
