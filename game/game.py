@@ -49,7 +49,7 @@ class Game:
                 + "Travel, check stats or take a rest?\n"
             )
             if player.choice == player.choices[0]:
-                location_current = Game.locations[randint(0, len(Game.locations))]
+                location_current = Game.locations[randint(0, len(Game.locations) - 1)]
                 print(f"\nYou are now in {location_current}\n")
                 if location_current == Game.locations[2]:
                     print(
