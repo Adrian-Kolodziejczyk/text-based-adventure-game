@@ -1,4 +1,6 @@
-from random import randint
+from random import randint, choice
+
+# from game.game import Game
 
 
 class Items:
@@ -10,22 +12,24 @@ class Items:
     def __init__(self, type):
         match type:
             case "weapon":
-                self.name = Items.weapon_names[randint(0, len(Items.weapon_names) - 1)]
+                self.name = choice(Items.weapon_names)
+                self.weapon_min_damage = 1
+                self.weapon_max_damage = randint(1, 9)  # test values
             case "utility":
                 self.name = Items.utility_names[
                     randint(0, len(Items.utility_names) - 1)
                 ]
             case "random":
-                self.name = Items.all_names[randint(0, len(Items.all_names) - 1)]
+                self.name = choice(Items.all_names)
+                if self.name in Items.weapon_names:
+                    self.weapon_min_damage = 1
+                    self.weapon_max_damage = randint(1, 9)  # test values
             case _:
                 pass
-        Items.items.append(self)
 
     def __repr__(self) -> str:
         return f"{self.name}"
 
-
-# item1 = Items("weapon")
-# item2 = Items("utility")
-# item3 = Items("random")
-# print(Items.items)
+    def generate_item(player, type):
+        player.inventory.append(Items(type))
+        print(f"You have gained a new {type} item!")
