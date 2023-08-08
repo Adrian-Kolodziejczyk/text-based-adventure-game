@@ -1,9 +1,10 @@
 from os import system
-from random import randint
+from random import randint, choice
+from game.items import Items
 
 
 class Player:
-    choices = ["travel", "stats", "rest", "quit"]
+    choices = ["travel", "stats", "inventory", "rest", "equip", "equipment", "quit"]
     archetypes = ["warrior", "mage", "rogue"]
 
     def __init__(self):
@@ -11,7 +12,7 @@ class Player:
         system("cls")
         self.archetype = input(
             "Who would you like to become?"
-            + "Strong warrior, powerful mage or a stealthy rogue?\n"
+            + " Strong warrior, powerful mage or a stealthy rogue?\n"
         ).lower()
         system("cls")
         self.level = 1
@@ -19,16 +20,27 @@ class Player:
         self.intelligence = 1
         self.dexterity = 1
         self.health = 1
+        self.inventory = []
+        self.equipment = []
 
     @property
-    def min_damage(self, weapon_max_damage=1):
+    def min_damage(self):
         match self.archetype:
             case "warrior":
-                return self.strength * weapon_max_damage
+                if self.equipment:
+                    return self.strength * choice(self.equipment).weapon_min_damage
+                else:
+                    return self.strength
             case "mage":
-                return self.intelligence * weapon_max_damage
+                if self.equipment:
+                    return self.intelligence * choice(self.equipment).weapon_min_damage
+                else:
+                    return self.intelligence
             case "rogue":
-                return self.dexterity * weapon_max_damage
+                if self.equipment:
+                    return self.dexterity * choice(self.equipment).weapon_min_damage
+                else:
+                    return self.dexterity
             case _:
                 return 0
 
@@ -36,11 +48,22 @@ class Player:
     def max_damage(self, weapon_min_damage=1):
         match self.archetype:
             case "warrior":
-                return self.strength * 2 * weapon_min_damage
+                if self.equipment:
+                    return self.strength * 2 * choice(self.equipment).weapon_max_damage
+                else:
+                    return self.strength
             case "mage":
-                return self.intelligence * 2 * weapon_min_damage
+                if self.equipment:
+                    return (
+                        self.intelligence * 2 * choice(self.equipment).weapon_max_damage
+                    )
+                else:
+                    return self.intelligence
             case "rogue":
-                return self.dexterity * 2 * weapon_min_damage
+                if self.equipment:
+                    return self.dexterity * 2 * choice(self.equipment).weapon_max_damage
+                else:
+                    return self.dexterity
             case _:
                 return 0
 
@@ -84,6 +107,28 @@ class Player:
             case _:
                 pass
         print(f"You have gained {times} point(s) of {stat}!")
+
+    def equip_item(self):
+        item = input("Which item do you want to equip?\n")
+        for a in self.inventory:
+            if a.name == item:
+                if self.equipment:
+                    self.equipment.clear()
+                self.equipment.append(a)
+                self.inventory.remove(a)
+                print(f"You have equipped {a.name}.")
+
+    def check_equipment(self):
+        if self.equipment:
+            print(self.equipment)
+        else:
+            print("You dont have anything equipped.")
+
+    def check_inventory(self):
+        if self.inventory:
+            print(self.inventory)
+        else:
+            print("Your inventory is empty.")
 
     def level_up(self):
         self.level += 1

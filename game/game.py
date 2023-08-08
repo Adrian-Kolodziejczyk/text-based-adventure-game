@@ -1,5 +1,6 @@
 from random import randint
 from os import system
+from game.items import Items
 
 
 class Game:
@@ -46,7 +47,7 @@ class Game:
         while player.hit_points > 0:
             player.choice = input(
                 f"\nDay: {Game.day_count}\nWhat would you like to do? "
-                + "Travel, check stats or take a rest?\n"
+                + "Travel, check stats, check inventory or take a rest?\n"
             )
             if player.choice == player.choices[0]:
                 location_current = Game.locations[randint(0, len(Game.locations) - 1)]
@@ -58,6 +59,8 @@ class Game:
                         + "which contains valuable knowledge.\n"
                     )
                     player.add_stats("intelligence")
+                if location_current == "Peaceful lands":
+                    Items.generate_item(player, "random")
                 else:
                     print(
                         "You are trying to go past it without being noticed...\n"
@@ -68,12 +71,18 @@ class Game:
             elif player.choice == player.choices[1]:
                 player.check_stats()
             elif player.choice == player.choices[2]:
+                player.check_inventory()
+            elif player.choice == player.choices[3]:
                 print(
                     "\nYou found a place to safely camp and took a moment of respite. "
                     + "You are well rested!"
                 )
                 Game.day_count += 1
-            elif player.choice == player.choices[3]:
+            elif player.choice == player.choices[4]:
+                player.equip_item()
+            elif player.choice == player.choices[5]:
+                player.check_equipment()
+            elif player.choice == player.choices[-1]:
                 system("cls")
                 break
             else:
