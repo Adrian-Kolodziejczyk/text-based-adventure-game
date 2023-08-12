@@ -1,6 +1,7 @@
 from os import system
 from random import randint, choice
 from game.items import Items
+from game.print_slow import print_slow, input_slow
 
 
 class Player:
@@ -8,12 +9,15 @@ class Player:
     archetypes = ["warrior", "mage", "rogue"]
 
     def __init__(self):
-        self.name = input("Welcome. What is your name?\n").capitalize()
+        # print_slow("Welcome. What is your name?\n")
+        # self.name = input().capitalize()
+        self.name = input_slow("Welcome. What is your name?\n").capitalize()
         system("cls")
-        self.archetype = input(
+        print_slow(
             "Who would you like to become?"
             + " Strong warrior, powerful mage or a stealthy rogue?\n"
-        ).lower()
+        )
+        self.archetype = input().lower()
         system("cls")
         self.level = 1
         self.strength = 1
@@ -108,15 +112,31 @@ class Player:
                 pass
         print(f"You have gained {times} point(s) of {stat}!")
 
-    def equip_item(self):
-        item = input("Which item do you want to equip?\n")
+    def use_item(self):
+        item = input("Which item do you want to use?\n").capitalize()
         for a in self.inventory:
-            if a.name == item:
+            if a.name == item and a.equippable:
                 if self.equipment:
                     self.equipment.clear()
                 self.equipment.append(a)
                 self.inventory.remove(a)
                 print(f"You have equipped {a.name}.")
+                break
+        else:
+            print("You don't have any usable items.")
+
+    def equip_item(self):
+        item = input("Which item do you want to equip?\n").capitalize()
+        for a in self.inventory:
+            if a.name == item and a.equippable:
+                if self.equipment:
+                    self.equipment.clear()
+                self.equipment.append(a)
+                self.inventory.remove(a)
+                print(f"You have equipped {a.name}.")
+                break
+        else:
+            print("You cannot equip that.")
 
     def check_equipment(self):
         if self.equipment:
