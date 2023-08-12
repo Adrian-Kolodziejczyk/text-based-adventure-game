@@ -3,3 +3,4 @@
 entity/__pycache__/
 game/__pycache__/
 /test.py
+game/events.py
